@@ -1,0 +1,141 @@
+
+#mapid { 
+    width:100%;
+    height:580px; 
+    margin-top:56px;
+}
+
+.panelBoczny{
+    margin-top:56px;
+    margin-bottom:120px;
+    float:left;
+    margin-left: 2px;
+}
+#menu {
+    width:100%;
+}
+html {
+    height: 100%;
+}
+body{
+    background-color:#f9ffe6;
+    padding-bottom: 150px;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+.main_image {
+    height: 500px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+  }
+  
+  .main_text {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    margin-bottom: 120px;
+  }
+.header
+{ 
+    margin: 0px;
+} 
+
+.content1
+{   
+    width:100%;
+    min-height:100%;
+}
+.opisStrony
+{
+    margin-left: 2px;
+    margin-top:56px;
+    margin-bottom:100px;
+    float:left;
+}
+ .error{
+   color:red;
+ }
+ 
+.loginForm{
+    margin-top:56px;
+}
+.Form_l_s{
+    margin-top:56px;
+    margin-bottom:120px;
+    padding:10px;
+}
+#nickWrap {
+    margin-top:56px;
+    padding:15px;
+}
+#users {
+    margin-top:0px;
+    display:none;
+    padding: 20px;
+    color:#bfbfbf;
+}
+#UserList{
+    margin-top:66px;
+    overflow-y:scroll;
+    height:89vh;
+    background-color: #404040;
+    display:none;
+}
+#UserList h5{
+    margin-top: 10px;
+    text-align: center;
+    color: #bfbfbf;
+}
+#formMsg {
+    padding: 10px;
+    margin-top:5px;
+    display:none;
+}
+
+ #m {
+    padding:10px;  
+    width: 64vw;
+ }
+ #btn {
+    
+    border: none;
+    width: 80px;
+    margin-right:0;
+    padding: 10px 0;
+ }
+
+ #messages {
+    list-style-type: none;
+    margin-left: 10px;
+    padding: 0;
+ }
+
+ #messages  {
+     margin-top: auto;
+     margin-bottom: auto;
+     margin-right: 10px;
+     border-radius: 25px;
+     padding: 10px;
+     position: relative;
+     
+ }
+ 
+
+ #contentWrap{
+   display:none;
+   margin-left: 0px;
+   margin-top:66px;
+   overflow-y:scroll;
+   height: 80vh;
+   background-color: white;
+}
+ .error{
+   color:red;
+ }

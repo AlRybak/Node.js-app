@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="opis strony" />
+    <meta name="keywords" content="Słowa kluczowe" />
+    <meta name="author" content="Aleksandra Wróbel" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/dane.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script><link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <title>Mapa</title>
+</head>
+<body>
+  <div class="container-fluid p-0">
+    <div class="row">
+        <div class="col-md-12">
+                <nav class="navbar navbar-dark fixed-top bg-dark navbar-expand-md"><a class="navbar-brand" href="mapa.html">Strona główna</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menuglowne"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="menuglowne">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item"><a class="nav-link" href="mapa.html">Załóż konto</a></li>
+                            <li class="nav-item"><a class="nav-link" href="mapa.html"> Zaloguj się</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/logout"> Wyloguj się</a></li>
+                            <li class="nav-item"><a class="nav-link active" href="mapa.html"> Szukaj na mapie</a></li>
+                            <li class="nav-item"><a class="nav-link" href="chat.html"> Forum</a></li>
+                        </ul>
+                    </div>
+                </nav>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-10">
+            <div id="mapid"></div>
+        </div>
+        <div class="col-md-2">
+          <div class="panelBoczny">
+                <form name="myForm">
+                    <input id="myCheck" type="radio" name="typ" value="jazda konna">  jazda konna<br>
+                    <input id="myCheck" type="radio" name="typ" value="narty">  narty<br>
+                    <input id="myCheck" type="radio" name="typ" value="narty wodne">  narty wodne<br>
+                    <input id="myCheck" type="radio" name="typ" value="park linowy">  park linowy<br>
+                    <input id="myCheck" type="radio" name="typ" value="park trampolin">  park trampolin<br>
+                    <input id="myCheck" type="radio" name="typ" value="pole golfowe">  pole golfowe<br>
+                    <input id="myCheck" type="radio" name="typ" value="ścianki wspinaczkowe">  ścianki wspinaczkowe<br>
+                    <input id="myCheck" type="radio" name="typ" value="korty tenisowe">  korty tenisowe<br>
+                    <input id="myCheck" type="radio" name="typ" value="squash">  squash<br>
+                    <input id="myCheck" type="radio" name="typ" value="gokarty">  gokarty<br>
+                    <input id="myCheck" type="radio" name="typ" value="kręgle">  kręgle<br>
+                    <input id="myCheck" type="radio" name="typ" value="bilard">  bilard<br>
+                    <input id="myCheck" type="radio" name="typ" value="escape room">  escape room<br>
+                    <input id="myCheck" type="radio" name="typ" value="paintball">  paintball<br>
+                    <input id="myCheck" type="radio" name="typ" value="strzelnica">  strzelnica<br>
+                    <input id="myCheck" type="radio" name="typ" value="basen">  basen<br>
+                    <input id="myCheck" type="radio" name="typ" value="łyżwy">  łyżwy<br>
+                    <input id="myCheck" type="radio" name="typ" value="wrotki">  wrotki<br>
+                    <input id="myCheck" type="radio" name="typ" value="zaden">  żaden z powyższych<br><br>
+                    </form>
+          </div>
+        </div>
+      </div>
+    <div class="row">
+        <div class="col-md-12">
+          <footer class="page-footer font-small fixed-bottom text-dark font-weight-light bg-light pt-4 footer-copyright text-center py-3">© Aleksandra Wróbel, 2019. Uniwersytet Marii Curie-Skłodowskiej. Wydział Matematyki, Fizyki i Informatyki. Praca licencjacka: Aktywne formy rozrywki w Lublinie - baza danych i aplikacja internetowa.</footer>
+        </div>
+    </div>
+</div>        
+<script> 
+  let mymap = L.map('mapid').setView([51.230, 22.57], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(mymap); 
+    
+  let layerGroup = new L.LayerGroup();
+  layerGroup.addTo(mymap);
+
+  var geojsonMarkerOptions = {
+    radius: 10,
+    fillColor: "#ff7800",
+    color: "#000",
+    weight: 1,
+    opacity: 10,
+    fillOpacity: 0.5
+  };
+  
+    let markerStrzelnica = new L.geoJSON(strzelnica, {
+      pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+    onEachFeature: function(feature, layer) {
+      layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+'<a id="link">'+feature.properties.strona+'</a>'+'</p>');
+    }
+  })
+  
+  let markerJKonna = new L.geoJSON(jKonna, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerNarty = new L.geoJSON(narty, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerNartyW = new L.geoJSON(nartyW, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerPLinowy = new L.geoJSON(pLinowy, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerGolf = new L.geoJSON(golf, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerTenis = new L.geoJSON(tenis, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerTrampoliny = new L.geoJSON(trampoliny, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerWspinaczka = new L.geoJSON(wspinaczka, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerSquash = new L.geoJSON(squash, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerRolki = new L.geoJSON(rolki, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerPaintball = new L.geoJSON(paintball, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerLyzwy = new L.geoJSON(lyzwy, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerGokarty = new L.geoJSON(gokarty, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerEscape = new L.geoJSON(escape, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerBilard = new L.geoJSON(bilard, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerKregle = new L.geoJSON(kregle, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+  let markerBasen = new L.geoJSON(basen, {
+    pointToLayer: function (feature, layer) {
+          return L.circleMarker(layer, geojsonMarkerOptions);
+      },
+                  onEachFeature: function(feature, layer) {
+                        layer.bindPopup('<p><b>nazwa:</b> '+feature.properties.Name+'<p><b>adres:</b> '+feature.properties.adres+'<p><b>strona:</b> '+feature.properties.strona+'</p>');
+  }})
+
+  $('input[type=radio][name=typ]').change(function() {
+    if (this.value=='basen') {
+      layerGroup.addLayer(markerBasen);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+
+    }
+    else if (this.value == 'narty') {
+      layerGroup.addLayer(markerNarty);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+    }
+    else if (this.value == 'narty wodne') {
+      layerGroup.addLayer(markerNartyW);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+
+      
+    }
+    else if (this.value == 'park linowy') {
+      layerGroup.addLayer(markerPLinowy);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+
+      
+    }
+    else if (this.value == 'park trampolin') {
+      layerGroup.addLayer(markerTrampoliny);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+      
+    }
+    else if (this.value == 'pole golfowe') {
+      layerGroup.addLayer(markerGolf);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+
+      
+    }
+    else if (this.value == 'ścianki wspinaczkowe') {
+      layerGroup.addLayer(markerWspinaczka);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+
+      
+    }
+    else if (this.value == 'korty tenisowe') {
+      layerGroup.addLayer(markerTenis);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+
+      
+    }
+    else if (this.value == 'squash') {
+      layerGroup.addLayer(markerSquash);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+    }
+    else if (this.value == 'gokarty') {
+      layerGroup.addLayer(markerGokarty);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);  
+    }
+    else if (this.value == 'kręgle') {
+      layerGroup.addLayer(markerKregle);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+    }
+    else if (this.value == 'bilard') {
+      layerGroup.addLayer(markerBilard);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+    }
+    else if (this.value == 'escape room') {
+      layerGroup.addLayer(markerEscape);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+      
+    }
+    else if (this.value == 'paintball') {
+      layerGroup.addLayer(markerPaintball);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+    }
+    else if (this.value == 'strzelnica') {
+      layerGroup.addLayer(markerStrzelnica);
+
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+      
+    }
+    else if (this.value == 'jazda konna') {
+      layerGroup.addLayer(markerJKonna);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+    }
+    else if (this.value == 'łyżwy') {
+      layerGroup.addLayer(markerLyzwy);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+    }
+    else if (this.value == 'wrotki') {
+      layerGroup.addLayer(markerRolki);
+
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerSquash);
+    }
+    else if (this.value == 'zaden') {
+      layerGroup.removeLayer(markerStrzelnica);
+      layerGroup.removeLayer(markerJKonna);
+      layerGroup.removeLayer(markerNarty);
+      layerGroup.removeLayer(markerNartyW);
+      layerGroup.removeLayer(markerPLinowy);
+      layerGroup.removeLayer(markerGolf);
+      layerGroup.removeLayer(markerTenis);
+      layerGroup.removeLayer(markerTrampoliny);
+      layerGroup.removeLayer(markerWspinaczka);
+      layerGroup.removeLayer(markerBasen);
+      layerGroup.removeLayer(markerBilard);
+      layerGroup.removeLayer(markerEscape);
+      layerGroup.removeLayer(markerGokarty);
+      layerGroup.removeLayer(markerKregle);
+      layerGroup.removeLayer(markerLyzwy);
+      layerGroup.removeLayer(markerPaintball);
+      layerGroup.removeLayer(markerRolki);
+      layerGroup.removeLayer(markerSquash);
+    } 
+  });      
+
+            var control=L.Routing.control({
+              routeWhileDragging: true,
+              geocoder: L.Control.Geocoder.nominatim(),
+              waypointNameFallback: function(latLng) {
+                function zeroPad(n) {
+                    n = Math.round(n);
+                    return n < 10 ? '0' + n : n;
+                }
+                function sexagesimal(p, pos, neg) {
+                    var n = Math.abs(p),
+                        degs = Math.floor(n),
+                        mins = (n - degs) * 60,
+                        secs = (mins - Math.floor(mins)) * 60,
+                        frac = Math.round((secs - Math.floor(secs)) * 100);
+                    return (n >= 0 ? pos : neg) + degs + '°' +
+                        zeroPad(mins) + '\'' +
+                        zeroPad(secs) + '.' + zeroPad(frac) + '"';
+                }
+
+                return sexagesimal(latLng.lat, 'N', 'S') + ' ' + sexagesimal(latLng.lng, 'E', 'W');
+            }
+            }).addTo(mymap);
+
+            function createButton(label, container) {
+              var btn = L.DomUtil.create('button', '', container);
+              btn.setAttribute('type', 'button');
+              btn.innerHTML = label;
+              return btn;
+          }
+
+          mymap.on('click', function(e) {
+              var container = L.DomUtil.create('div'),
+                startBtn = createButton('Startuj z tego miejsca', container),
+                destBtn = createButton('Idź do tego miejsca', container);
+
+              L.popup()
+                  .setContent(container)
+                  .setLatLng(e.latlng)
+                  .openOn(mymap);
+            L.DomEvent.on(startBtn, 'click', function() {
+              control.spliceWaypoints(0, 1, e.latlng);
+              mymap.closePopup();
+            });
+            L.DomEvent.on(destBtn, 'click', function() {
+              control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
+              mymap.closePopup();
+            });
+          });  
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="js/bootstrap.min.js"></script>  
+</body>
+</html>
+
+
+
+
+
+
+
+
